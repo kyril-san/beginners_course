@@ -24,11 +24,14 @@ class _HomepageState extends State<Homepage> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
-              print(user);
-              if (user!.emailVerified) {
-                return LoginPage();
+              if (user != null) {
+                if (user.emailVerified) {
+                  return Text('Verified');
+                } else {
+                  return VerifyEmailPage();
+                }
               } else {
-                return VerifyEmailPage();
+                return LoginPage();
               }
 
             default:
