@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "231160723385",
+    "project_id": "beginners-course-demo",
+    "storage_bucket": "beginners-course-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231160723385:android:ee4d04dd2715d322cc6868",
+        "android_client_info": {
+          "package_name": "com.example.beginners_course"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbgy7InCKt-TdXQ32pkbg3FfF9tKDpc94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
