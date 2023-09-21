@@ -1,13 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
 import 'package:beginners_course/const/routes.dart';
-import 'package:beginners_course/firebase_options.dart';
+import 'package:beginners_course/service/auth/auth_exceptions.dart';
+import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:beginners_course/utils/show_error_dialog.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class Registerview extends StatefulWidget {
   const Registerview({super.key});
@@ -42,8 +39,7 @@ class _RegisterviewState extends State<Registerview> {
         backgroundColor: Colors.blue,
       ),
       body: FutureBuilder(
-          future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform),
+          future: Authservice.firebase().initialize(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
@@ -76,36 +72,29 @@ class _RegisterviewState extends State<Registerview> {
                             final email = _email.text;
                             final password = _password.text;
                             try {
-                              await FirebaseAuth.instance
-                                  .createUserWithEmailAndPassword(
-                                      email: email, password: password);
-                              final user = FirebaseAuth.instance.currentUser;
-                              await user!.sendEmailVerification();
+                              await Authservice.firebase()
+                                  .createuser(email: email, password: password);
+                              Authservice.firebase().sendEmailVerification();
                               if (mounted) {
                                 Navigator.of(context).pushNamed(verifyemail);
                               }
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'weak-password') {
-                                if (mounted) {
-                                  await showErrorDialog(
-                                      context, 'Weak Password');
-                                }
-                              } else if (e.code == 'email-already-in-use') {
-                                if (mounted) {
-                                  await showErrorDialog(
-                                      context, 'Email Already in use');
-                                }
-                                log('Email Already in use');
-                              } else {
-                                if (mounted) {
-                                  await showErrorDialog(
-                                      context, 'Error: ${e.code}');
-                                }
+                            } on WeakPasswordException {
+                              if (mounted) {
+                                await showErrorDialog(context, 'Weak Password');
                               }
-                            } catch (e) {
+                            } on EmailAlreadyinUseException {
                               if (mounted) {
                                 await showErrorDialog(
-                                    context, 'Error: ${e.toString()}');
+                                    context, 'Email Already In Use');
+                              }
+                            } on InvalidEmailAuthException {
+                              if (mounted) {
+                                await showErrorDialog(context, 'Invalid Email');
+                              }
+                            } on GenericAuthExceptions {
+                              if (mounted) {
+                                await showErrorDialog(
+                                    context, 'Unable to Create an Account');
                               }
                             }
                           },

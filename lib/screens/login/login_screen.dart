@@ -1,12 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
 import 'package:beginners_course/const/routes.dart';
-import 'package:beginners_course/firebase_options.dart';
+import 'package:beginners_course/service/auth/auth_exceptions.dart';
+import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:beginners_course/utils/show_error_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -42,9 +39,8 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Colors.blue,
         ),
         body: FutureBuilder(
-          future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          future: Authservice.firebase().initialize(),
+          builder: (context, snapshot) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -74,12 +70,11 @@ class _LoginPageState extends State<LoginPage> {
                         final password = _password.text;
 
                         try {
-                          await FirebaseAuth.instance
-                              .signInWithEmailAndPassword(
-                                  email: email, password: password);
+                          await Authservice.firebase()
+                              .logIn(email: email, password: password);
 
-                          final user = FirebaseAuth.instance.currentUser;
-                          if (user?.emailVerified ?? false) {
+                          final user = Authservice.firebase().currentUser;
+                          if (user!.isEmailVerified) {
                             if (mounted) {
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 homeroute,
@@ -94,27 +89,24 @@ class _LoginPageState extends State<LoginPage> {
                               );
                             }
                           }
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == 'invalid-email') {
-                            if (mounted) {
-                              await showErrorDialog(context, 'Invalid Email');
-                            }
-                          } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-                            if (mounted) {
-                              await showErrorDialog(context, e.code);
-                            }
-                          } else {
-                            if (mounted) {
-                              await showErrorDialog(
-                                  context, 'Error: ${e.code.toUpperCase()}');
-                            }
-                          }
-
-                          log(e.message.toString());
-                        } catch (e) {
+                        } on InvalidLoginCredentialsException {
                           if (mounted) {
                             await showErrorDialog(
-                                context, 'Error: ${e.toString()}');
+                                context, 'Invalid Login Credentials');
+                          }
+                        } on InvalidEmailException {
+                          if (mounted) {
+                            await showErrorDialog(
+                                context, 'Invalid Email Used');
+                          }
+                        } on WrongPassowrdException {
+                          if (mounted) {
+                            await showErrorDialog(context, 'Wrong Password');
+                          }
+                        } on GenericAuthExceptions {
+                          if (mounted) {
+                            await showErrorDialog(
+                                context, 'Authentication Error');
                           }
                         }
                       },

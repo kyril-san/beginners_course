@@ -3,6 +3,8 @@ class InvalidLoginCredentialsException implements Exception {}
 
 class InvalidEmailException implements Exception {}
 
+class WrongPassowrdException implements Exception {}
+
 //* Register Exceptions
 
 class WeakPasswordException implements Exception {}

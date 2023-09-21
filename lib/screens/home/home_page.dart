@@ -3,7 +3,8 @@
 import 'dart:developer';
 
 import 'package:beginners_course/const/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:beginners_course/enum/menu_action.dart';
+import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 final logout = await showLogout(context);
                 log(logout.toString());
                 if (logout) {
-                  await FirebaseAuth.instance.signOut();
+                  await Authservice.firebase().logOut();
                   if (mounted) {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginroute, (route) => false);
@@ -76,5 +77,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-enum MenuAction { logout, login }
