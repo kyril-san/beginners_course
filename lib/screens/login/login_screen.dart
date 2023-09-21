@@ -77,11 +77,22 @@ class _LoginPageState extends State<LoginPage> {
                           await FirebaseAuth.instance
                               .signInWithEmailAndPassword(
                                   email: email, password: password);
-                          if (mounted) {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              homeroute,
-                              (route) => false,
-                            );
+
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user?.emailVerified ?? false) {
+                            if (mounted) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                homeroute,
+                                (route) => false,
+                              );
+                            }
+                          } else {
+                            if (mounted) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                verifyemail,
+                                (route) => false,
+                              );
+                            }
                           }
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'invalid-email') {

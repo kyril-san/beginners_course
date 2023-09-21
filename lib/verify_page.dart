@@ -47,7 +47,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   await FirebaseAuth.instance.signOut();
                   if (mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      registerroute,
+                      loginroute,
                       (route) => false,
                     );
                   }
