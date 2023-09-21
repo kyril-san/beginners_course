@@ -33,7 +33,7 @@ class _CheckVerificationPageState extends State<CheckVerificationPage> {
               }
 
             default:
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
           }
         });
   }

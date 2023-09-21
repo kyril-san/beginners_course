@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:beginners_course/const/routes.dart';
-import 'package:beginners_course/firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:beginners_course/service/auth/auth_service.dart';
+
 import 'package:flutter/material.dart';
 
 class VerifyEmailPage extends StatefulWidget {
@@ -36,15 +35,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 'If you have not received an email, Please click this link below to verify your email.'),
             TextButton(
                 onPressed: () async {
-                  await Firebase.initializeApp(
-                      options: DefaultFirebaseOptions.currentPlatform);
-                  final user = FirebaseAuth.instance.currentUser;
-                  await user!.sendEmailVerification();
+                  await Authservice.firebase().initialize();
+                  Authservice.firebase().sendEmailVerification();
                 },
                 child: Text('Send email verification')),
             TextButton(
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
+                  await Authservice.firebase().logOut();
                   if (mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginroute,
