@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +51,11 @@ class _HomePageState extends State<HomePage> {
                 log(logout.toString());
                 if (logout) {
                   await FirebaseAuth.instance.signOut();
+                  if (mounted) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => LoginPage()),
+                        (route) => false);
+                  }
                 }
                 break;
               default:

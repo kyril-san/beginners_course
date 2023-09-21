@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:beginners_course/firebase_options.dart';
+import 'package:beginners_course/screens/home/home_page.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -73,11 +74,15 @@ class _LoginPageState extends State<LoginPage> {
                         final password = _password.text;
 
                         try {
-                          final usercredential = await FirebaseAuth.instance
+                          await FirebaseAuth.instance
                               .signInWithEmailAndPassword(
                                   email: email, password: password);
-
-                          log(usercredential.toString());
+                          if (mounted) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (_) => HomePage()),
+                              (route) => false,
+                            );
+                          }
                         } on FirebaseAuthException catch (e) {
                           log(e.message.toString());
                         } catch (e) {
