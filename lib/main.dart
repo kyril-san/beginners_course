@@ -1,6 +1,6 @@
 // ignore_for_file: unused_import
 
-import 'package:beginners_course/screens/home/home_page.dart';
+import 'package:beginners_course/screens/verify/check_verify_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
 import 'package:beginners_course/verify_page.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const CheckVerificationPage(),
     );
   }
 }

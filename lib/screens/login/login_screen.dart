@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:beginners_course/firebase_options.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,11 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                               .signInWithEmailAndPassword(
                                   email: email, password: password);
 
-                          print(usercredential);
+                          log(usercredential.toString());
                         } on FirebaseAuthException catch (e) {
-                          print(e.message);
+                          log(e.message.toString());
                         } catch (e) {
-                          print('something bad happened :  ${e.runtimeType}');
+                          log('something bad happened :  ${e.runtimeType}');
                         }
                       },
                       child: Text('Login')),
