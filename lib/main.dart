@@ -1,5 +1,7 @@
-// ignore_for_file: unused_import
+// ignore_for_file: unused_import, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:beginners_course/const/routes.dart';
+import 'package:beginners_course/screens/home/home_page.dart';
 import 'package:beginners_course/screens/verify/check_verify_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
@@ -23,6 +25,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const CheckVerificationPage(),
+      routes: {
+        loginroute: (context) => LoginPage(),
+        registerroute: (context) => Registerview(),
+        homeroute: (context) => HomePage(),
+        verifyemail: (context) => VerifyEmailPage(),
+      },
     );
   }
 }

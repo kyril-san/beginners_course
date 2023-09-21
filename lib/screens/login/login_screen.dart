@@ -2,9 +2,9 @@
 
 import 'dart:developer';
 
+import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/firebase_options.dart';
-import 'package:beginners_course/screens/home/home_page.dart';
-import 'package:beginners_course/screens/register/register_screen.dart';
+import 'package:beginners_course/utils/show_error_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -78,23 +78,40 @@ class _LoginPageState extends State<LoginPage> {
                               .signInWithEmailAndPassword(
                                   email: email, password: password);
                           if (mounted) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (_) => HomePage()),
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              homeroute,
                               (route) => false,
                             );
                           }
                         } on FirebaseAuthException catch (e) {
+                          if (e.code == 'invalid-email') {
+                            if (mounted) {
+                              await showErrorDialog(context, 'Invalid Email');
+                            }
+                          } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+                            if (mounted) {
+                              await showErrorDialog(context, e.code);
+                            }
+                          } else {
+                            if (mounted) {
+                              await showErrorDialog(
+                                  context, 'Error: ${e.code.toUpperCase()}');
+                            }
+                          }
+
                           log(e.message.toString());
                         } catch (e) {
-                          log('something bad happened :  ${e.runtimeType}');
+                          if (mounted) {
+                            await showErrorDialog(
+                                context, 'Error: ${e.toString()}');
+                          }
                         }
                       },
                       child: Text('Login')),
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (_) => Registerview()),
-                            (route) => false);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            registerroute, (route) => false);
                       },
                       child: Text('Not Registered yet? Click here!'))
                 ],

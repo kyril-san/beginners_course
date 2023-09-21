@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,7 +30,10 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Please click this link below to verify your email.'),
+            Text(
+                "We've have sent you an email verifications. Please Click the link to verify"),
+            Text(
+                'If you have not received an email, Please click this link below to verify your email.'),
             TextButton(
                 onPressed: () async {
                   await Firebase.initializeApp(
@@ -37,7 +41,18 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   final user = FirebaseAuth.instance.currentUser;
                   await user!.sendEmailVerification();
                 },
-                child: Text('Send email verification'))
+                child: Text('Send email verification')),
+            TextButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  if (mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      registerroute,
+                      (route) => false,
+                    );
+                  }
+                },
+                child: Text('Restart'))
           ],
         ),
       ),

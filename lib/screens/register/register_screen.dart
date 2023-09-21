@@ -2,8 +2,9 @@
 
 import 'dart:developer';
 
+import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/firebase_options.dart';
-import 'package:beginners_course/screens/login/login_screen.dart';
+import 'package:beginners_course/utils/show_error_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,26 +76,44 @@ class _RegisterviewState extends State<Registerview> {
                             final email = _email.text;
                             final password = _password.text;
                             try {
-                              final userCredential = await FirebaseAuth.instance
+                              await FirebaseAuth.instance
                                   .createUserWithEmailAndPassword(
                                       email: email, password: password);
-                              log(userCredential.toString());
+                              final user = FirebaseAuth.instance.currentUser;
+                              await user!.sendEmailVerification();
+                              if (mounted) {
+                                Navigator.of(context).pushNamed(verifyemail);
+                              }
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
-                                log('Weak Password');
+                                if (mounted) {
+                                  await showErrorDialog(
+                                      context, 'Weak Password');
+                                }
                               } else if (e.code == 'email-already-in-use') {
+                                if (mounted) {
+                                  await showErrorDialog(
+                                      context, 'Email Already in use');
+                                }
                                 log('Email Already in use');
+                              } else {
+                                if (mounted) {
+                                  await showErrorDialog(
+                                      context, 'Error: ${e.code}');
+                                }
                               }
                             } catch (e) {
-                              log(e.runtimeType.toString());
+                              if (mounted) {
+                                await showErrorDialog(
+                                    context, 'Error: ${e.toString()}');
+                              }
                             }
                           },
                           child: Text('Register')),
                       TextButton(
                           onPressed: () {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(builder: (_) => LoginPage()),
-                                (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                loginroute, (route) => false);
                           },
                           child: Text('Click here to Login'))
                     ],
