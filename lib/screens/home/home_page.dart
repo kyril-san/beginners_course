@@ -35,58 +35,66 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Main Ui'),
-          centerTitle: true,
-          actions: [
-            PopupMenuButton<MenuAction>(onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logout:
-                  final logout = await showLogout(context);
-                  log(logout.toString());
-                  if (logout) {
-                    await Authservice.firebase().logOut();
-                    if (mounted) {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          loginroute, (route) => false);
-                    }
+      appBar: AppBar(
+        title: Text('Main Ui'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newnotesview);
+              },
+              icon: Icon(Icons.add)),
+          PopupMenuButton<MenuAction>(onSelected: (value) async {
+            switch (value) {
+              case MenuAction.logout:
+                final logout = await showLogout(context);
+                log(logout.toString());
+                if (logout) {
+                  await Authservice.firebase().logOut();
+                  if (mounted) {
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil(loginroute, (route) => false);
                   }
-                  break;
-                default:
-              }
-            }, itemBuilder: (context) {
-              return [
-                PopupMenuItem<MenuAction>(
-                  value: MenuAction.logout,
-                  child: Text('Logout'),
-                )
-              ];
-            })
-          ],
-          backgroundColor: Colors.amber,
-        ),
-        body: FutureBuilder(
-            future: _notesService.getorCreateUser(email: userEmail),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  return StreamBuilder(
-                      stream: _notesService.allNotes,
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                          case ConnectionState.waiting:
-                            return Center(child: const Text('waiting...'));
-                          case ConnectionState.active:
-                          case ConnectionState.done:
-                          default:
-                            return CircularProgressIndicator();
-                        }
-                      });
-                default:
-                  return CircularProgressIndicator();
-              }
-            }));
+                }
+                break;
+              default:
+            }
+          }, itemBuilder: (context) {
+            return [
+              PopupMenuItem<MenuAction>(
+                value: MenuAction.logout,
+                child: Text('Logout'),
+              )
+            ];
+          })
+        ],
+        backgroundColor: Colors.amber,
+      ),
+      body: FutureBuilder(
+        future: _notesService.getorCreateUser(email: userEmail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return StreamBuilder(
+                  stream: _notesService.allNotes,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                      case ConnectionState.active:
+                        return Center(child: const Text('waiting...'));
+
+                      case ConnectionState.done:
+                      default:
+                        return CircularProgressIndicator();
+                    }
+                  });
+            default:
+              return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
   }
 }
 
