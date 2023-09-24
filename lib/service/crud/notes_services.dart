@@ -10,11 +10,16 @@ class NotesService {
   List<DatabaseNotes> _notes = [];
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notestreamController = StreamController<List<DatabaseNotes>>.broadcast(
+      onListen: () {
+        _notestreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
 
-  final _notestreamController =
-      StreamController<List<DatabaseNotes>>.broadcast();
+  late final StreamController<List<DatabaseNotes>> _notestreamController;
 
   Stream<List<DatabaseNotes>> get allNotes => _notestreamController.stream;
 
@@ -224,9 +229,10 @@ class NotesService {
 
   Future<void> _ensureDbisOpen() async {
     try {
+      // await close();
       await open();
     } on DatabaseALreadyOpenException {
-      // throw DatabaseALreadyOpenException();
+      throw DatabaseALreadyOpenException();
     }
   }
 

@@ -23,7 +23,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
     super.initState();
   }
 
-  Future<DatabaseNotes> createNewNote(BuildContext context) async {
+  Future<DatabaseNotes> createNewNote() async {
     final exisitingnote = _note;
     if (exisitingnote != null) {
       return exisitingnote;
@@ -79,8 +79,8 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
         centerTitle: true,
         backgroundColor: Colors.amber,
       ),
-      body: FutureBuilder<DatabaseNotes>(
-          future: createNewNote(context),
+      body: FutureBuilder(
+          future: createNewNote(),
           builder: (context, index) {
             switch (index.connectionState) {
               case ConnectionState.done:

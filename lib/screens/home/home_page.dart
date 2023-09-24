@@ -27,12 +27,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -79,12 +73,27 @@ class _HomePageState extends State<HomePage> {
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
                       case ConnectionState.active:
-                        return Center(child: const Text('waiting...'));
+                        if (snapshot.hasData) {
+                          final allnotes = snapshot.data as List<DatabaseNotes>;
+                          return ListView.builder(
+                              itemCount: allnotes.length,
+                              itemBuilder: ((context, index) {
+                                return ListTile(
+                                  title: Text(
+                                    allnotes[index].text,
+                                    style: TextStyle(color: Colors.black),
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  // tileColor: Colors.red,
+                                );
+                              }));
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
 
-                      case ConnectionState.done:
                       default:
                         return CircularProgressIndicator();
                     }
