@@ -5,7 +5,8 @@ import 'dart:developer';
 import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/enum/menu_action.dart';
 import 'package:beginners_course/service/auth/auth_service.dart';
-import 'package:beginners_course/service/crud/notes_services.dart';
+import 'package:beginners_course/service/cloud/cloud_note.dart';
+import 'package:beginners_course/service/cloud/firebaser_cloud_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,94 +17,83 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final NotesService _notesService;
+  late final FirebaseCloudStorage _notesService;
   String get userEmail => Authservice.firebase().currentUser!.email!;
 
   @override
   void initState() {
     super.initState();
-    _notesService = NotesService();
-    _notesService.open();
+    _notesService = FirebaseCloudStorage();
+    // _notesService.open;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Main Ui'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(newnotesview);
-              },
-              icon: Icon(Icons.add)),
-          PopupMenuButton<MenuAction>(onSelected: (value) async {
-            switch (value) {
-              case MenuAction.logout:
-                final logout = await showLogout(context);
-                log(logout.toString());
-                if (logout) {
-                  await Authservice.firebase().logOut();
-                  if (mounted) {
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(loginroute, (route) => false);
-                  }
-                }
-                break;
-              default:
-            }
-          }, itemBuilder: (context) {
-            return [
-              PopupMenuItem<MenuAction>(
-                value: MenuAction.logout,
-                child: Text('Logout'),
-              )
-            ];
-          })
-        ],
-        backgroundColor: Colors.amber,
-      ),
-      body: FutureBuilder(
-        future: _notesService.getOrCreateUser(email: userEmail),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              return StreamBuilder(
-                  stream: _notesService.allNotes,
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.active:
-                        if (snapshot.hasData) {
-                          final allnotes = snapshot.data as List<DatabaseNote>;
-                          return ListView.builder(
-                              itemCount: allnotes.length,
-                              itemBuilder: ((context, index) {
-                                return ListTile(
-                                  title: Text(
-                                    allnotes[index].text,
-                                    style: TextStyle(color: Colors.black),
-                                    maxLines: 1,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  // tileColor: Colors.red,
-                                );
-                              }));
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                      default:
-                        return CircularProgressIndicator();
+        appBar: AppBar(
+          title: Text('Main Ui'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(newnotesview);
+                },
+                icon: Icon(Icons.add)),
+            PopupMenuButton<MenuAction>(onSelected: (value) async {
+              switch (value) {
+                case MenuAction.logout:
+                  final logout = await showLogout(context);
+                  log(logout.toString());
+                  if (logout) {
+                    await Authservice.firebase().logOut();
+                    if (mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          loginroute, (route) => false);
                     }
-                  });
-            default:
-              return CircularProgressIndicator();
-          }
-        },
-      ),
-    );
+                  }
+                  break;
+                default:
+              }
+            }, itemBuilder: (context) {
+              return [
+                PopupMenuItem<MenuAction>(
+                  value: MenuAction.logout,
+                  child: Text('Logout'),
+                )
+              ];
+            })
+          ],
+          backgroundColor: Colors.amber,
+        ),
+        body: StreamBuilder(
+            stream: _notesService.allNotes(ownerUserId: userEmail),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.active:
+                  if (snapshot.hasData) {
+                    final allnotes = snapshot.data as Iterable<CloudNote>;
+                    return ListView.builder(
+                        itemCount: allnotes.length,
+                        itemBuilder: ((context, index) {
+                          return ListTile(
+                            title: Text(
+                              allnotes.elementAt(index).text,
+                              style: TextStyle(color: Colors.black),
+                              maxLines: 1,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            // tileColor: Colors.red,
+                          );
+                        }));
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                default:
+                  return CircularProgressIndicator();
+              }
+            }));
   }
 }
 
