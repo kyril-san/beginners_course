@@ -12,7 +12,7 @@ class NewNotesViewsPage extends StatefulWidget {
 }
 
 class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
-  DatabaseNotes? _note;
+  DatabaseNote? _note;
   late final NotesService _notesService;
   late final TextEditingController _textcontroller;
 
@@ -23,7 +23,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
     super.initState();
   }
 
-  Future<DatabaseNotes> createNewNote() async {
+  Future<DatabaseNote> createNewNote() async {
     final exisitingnote = _note;
     if (exisitingnote != null) {
       return exisitingnote;
@@ -31,7 +31,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
     final currentUser = Authservice.firebase().currentUser!;
     final email = currentUser.email!;
     final owner = await _notesService.getUser(email: email);
-    return await _notesService.createnote(owner: owner);
+    return await _notesService.createNote(owner: owner);
   }
 
   void _deleteNoteifTextIsEmpty() {
@@ -45,7 +45,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
     final note = _note;
     final text = _textcontroller.text;
     if (note != null && text.isNotEmpty) {
-      await _notesService.updateNotes(note: note, text: text);
+      await _notesService.updateNote(note: note, text: text);
     }
   }
 
@@ -55,7 +55,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
       return;
     }
     final text = _textcontroller.text;
-    await _notesService.updateNotes(note: note, text: text);
+    await _notesService.updateNote(note: note, text: text);
   }
 
   void _setupTextControllerListener() {
@@ -84,7 +84,6 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
           builder: (context, index) {
             switch (index.connectionState) {
               case ConnectionState.done:
-                _note = index.data;
                 _setupTextControllerListener();
                 return TextField(
                   controller: _textcontroller,

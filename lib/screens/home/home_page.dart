@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.amber,
       ),
       body: FutureBuilder(
-        future: _notesService.getorCreateUser(email: userEmail),
+        future: _notesService.getOrCreateUser(email: userEmail),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.active:
                         if (snapshot.hasData) {
-                          final allnotes = snapshot.data as List<DatabaseNotes>;
+                          final allnotes = snapshot.data as List<DatabaseNote>;
                           return ListView.builder(
                               itemCount: allnotes.length,
                               itemBuilder: ((context, index) {
