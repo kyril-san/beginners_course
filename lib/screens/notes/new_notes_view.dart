@@ -4,6 +4,7 @@ import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:beginners_course/service/cloud/cloud_note.dart';
 import 'package:beginners_course/service/cloud/firebaser_cloud_storage.dart';
 import 'package:beginners_course/utils/generic/get_args.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 
 class NewNoteViewPage extends StatefulWidget {
@@ -98,12 +99,12 @@ class _NewNoteViewPageState extends State<NewNoteViewPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              // final text = _textController.text;
-              // if (_note == null || text.isEmpty) {
-              //   await showCannotShareEmptyNoteDialog(context);
-              // } else {
-              //   Share.share(text);
-              // }
+              final text = _textController.text;
+              if (_note == null || text.isEmpty) {
+                // await showCannotShareEmptyNoteDialog(context);
+              } else {
+                Share.share(text);
+              }
             },
             icon: const Icon(Icons.share),
           ),

@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final FirebaseCloudStorage _notesService;
-  String get userEmail => Authservice.firebase().currentUser!.email!;
+  String get userEmail => Authservice.firebase().currentUser!.email;
 
   @override
   void initState() {
