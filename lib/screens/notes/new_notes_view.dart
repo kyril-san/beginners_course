@@ -126,7 +126,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
                 );
 
               default:
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
             }
           }),
     );

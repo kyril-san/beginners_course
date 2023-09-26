@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show BuildContext, ModalRoute;
+import 'package:flutter/material.dart';
 
 extension GetArgument on BuildContext {
   T? getArgument<T>() {
