@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         registerroute: (context) => Registerview(),
         homeroute: (context) => HomePage(),
         verifyemail: (context) => VerifyEmailPage(),
-        newnotesview: (context) => NewNoteViewPage()
+        newnotesview: (context) => NewNotesViewsPage()
       },
     );
   }
