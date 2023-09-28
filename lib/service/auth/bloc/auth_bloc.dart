@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await provider.initialize();
       final user = provider.currentUser;
       if (user == null) {
-        emit(AuthStateLoggedOut());
+        emit(AuthStateLoggedOut(null));
       } else if (!user.isEmailVerified) {
         emit(AuthStateNeedVerification());
       } else {
@@ -24,14 +24,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     //!log in
     on<AuthEventLogin>((event, emit) async {
-      emit(AuthstateLoading());
       final email = event.email;
       final password = event.password;
       try {
         final user = await provider.logIn(email: email, password: password);
         emit(AuthStateLoggedIn(user));
       } on Exception catch (e) {
-        emit(AuthStateLoginFailure(e));
+        emit(AuthStateLoggedOut(e));
       }
     });
     //!log out
@@ -39,7 +38,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         emit(AuthstateLoading());
         await provider.logOut();
-        emit(AuthStateLoggedOut());
+        emit(AuthStateLoggedOut(null));
       } on Exception catch (e) {
         emit(AuthStateLogoutFailure(e));
       }

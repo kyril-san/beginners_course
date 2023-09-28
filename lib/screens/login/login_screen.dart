@@ -3,8 +3,10 @@
 import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/service/auth/auth_exceptions.dart';
 import 'package:beginners_course/service/auth/auth_service.dart';
+import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
 import 'package:beginners_course/utils/show_error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -64,53 +66,34 @@ class _LoginPageState extends State<LoginPage> {
                     enableSuggestions: false,
                   ),
                   SizedBox(height: 10),
-                  TextButton(
-                      onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
-
-                        try {
-                          await Authservice.firebase()
-                              .logIn(email: email, password: password);
-
-                          final user = Authservice.firebase().currentUser;
-                          if (user!.isEmailVerified) {
-                            if (mounted) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                homeroute,
-                                (route) => false,
-                              );
-                            }
-                          } else {
-                            if (mounted) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                verifyemail,
-                                (route) => false,
-                              );
-                            }
-                          }
-                        } on InvalidLoginCredentialsException {
-                          if (mounted) {
-                            await showErrorDialog(
-                                context, 'Invalid Login Credentials');
-                          }
-                        } on InvalidEmailException {
-                          if (mounted) {
-                            await showErrorDialog(
-                                context, 'Invalid Email Used');
-                          }
-                        } on WrongPassowrdException {
-                          if (mounted) {
-                            await showErrorDialog(context, 'Wrong Password');
-                          }
-                        } on GenericAuthExceptions {
-                          if (mounted) {
-                            await showErrorDialog(
-                                context, 'Authentication Error');
-                          }
+                  BlocListener<AuthBloc, AuthState>(
+                    listener: (context, state) async {
+                      if (state is AuthStateLoggedOut) {
+                        if (state.exception
+                            is InvalidLoginCredentialsException) {
+                          await showErrorDialog(
+                              context, 'Invalid Login Credentials');
+                        } else if (state.exception is InvalidEmailException) {
+                          await showErrorDialog(
+                              context, 'Invalid Email Address Used');
+                        } else if (state.exception is WrongPassowrdException) {
+                          await showErrorDialog(context, 'Wrong Password');
+                        } else if (state.exception is GenericAuthExceptions) {
+                          await showErrorDialog(
+                              context, 'Authentication Error');
                         }
-                      },
-                      child: Text('Login')),
+                      }
+                    },
+                    child: TextButton(
+                        onPressed: () async {
+                          final email = _email.text;
+                          final password = _password.text;
+                          context
+                              .read<AuthBloc>()
+                              .add(AuthEventLogin(email, password));
+                        },
+                        child: Text('Login')),
+                  ),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pushNamedAndRemoveUntil(
