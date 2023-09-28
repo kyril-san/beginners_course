@@ -6,8 +6,11 @@ import 'package:beginners_course/screens/notes/new_notes_view.dart';
 import 'package:beginners_course/screens/verify/check_verify_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
+import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
+import 'package:beginners_course/service/auth/firebase_auth_provider.dart';
 import 'package:beginners_course/verify_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +28,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const CheckVerificationPage(),
+      home: BlocProvider<AuthBloc>(
+        create: (context) => AuthBloc(FirebaseAuthProvider()),
+        child: CheckVerificationPage(),
+      ),
       routes: {
         loginroute: (context) => LoginPage(),
         registerroute: (context) => Registerview(),

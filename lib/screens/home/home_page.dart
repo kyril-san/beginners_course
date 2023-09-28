@@ -1,14 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:developer';
-
 import 'package:beginners_course/const/routes.dart';
 import 'package:beginners_course/enum/menu_action.dart';
 import 'package:beginners_course/screens/notes/create_Update_delete.dart';
 import 'package:beginners_course/service/auth/auth_service.dart';
+import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
 import 'package:beginners_course/service/cloud/cloud_note.dart';
 import 'package:beginners_course/service/cloud/firebase_cloud_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,12 +55,9 @@ class _HomePageState extends State<HomePage> {
               switch (value) {
                 case MenuAction.logout:
                   final logout = await showLogout(context);
-                  log(logout.toString());
                   if (logout) {
-                    await Authservice.firebase().logOut();
                     if (mounted) {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          loginroute, (route) => false);
+                      context.read<AuthBloc>().add(AuthEventLogOut());
                     }
                   }
                   break;
