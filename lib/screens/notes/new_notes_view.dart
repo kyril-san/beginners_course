@@ -3,6 +3,7 @@
 import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:beginners_course/service/cloud/cloud_note.dart';
 import 'package:beginners_course/service/cloud/firebase_cloud_storage.dart';
+import 'package:beginners_course/utils/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:beginners_course/utils/generics/get_args.dart';
 
 import 'package:share_plus/share_plus.dart';
@@ -99,7 +100,7 @@ class _NewNotesViewsPageState extends State<NewNotesViewsPage> {
             onPressed: () async {
               final text = _textcontroller.text;
               if (_note == null || text.isEmpty) {
-                // await showCannotShareEmptyNoteDialog(context);
+                await cannotShareEmptyNoteDialog(context);
               } else {
                 Share.share(text);
               }
