@@ -32,13 +32,7 @@ class MyApp extends StatelessWidget {
         create: (context) => AuthBloc(FirebaseAuthProvider()),
         child: CheckVerificationPage(),
       ),
-      routes: {
-        loginroute: (context) => LoginPage(),
-        registerroute: (context) => Registerview(),
-        homeroute: (context) => HomePage(),
-        verifyemail: (context) => VerifyEmailPage(),
-        newnotesview: (context) => NewNotesViewsPage()
-      },
+      routes: {newnotesview: (context) => NewNotesViewsPage()},
     );
   }
 }

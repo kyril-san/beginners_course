@@ -2,6 +2,7 @@
 
 import 'package:beginners_course/screens/home/home_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
+import 'package:beginners_course/screens/register/register_screen.dart';
 import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
 import 'package:beginners_course/verify_page.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,11 @@ class CheckVerificationPage extends StatelessWidget {
         builder: (context, state) {
       if (state is AuthStateLoggedIn) {
         return HomePage();
-      }
-      if (state is AuthStateNeedVerification) {
+      } else if (state is AuthStateNeedVerification) {
         return VerifyEmailPage();
-      }
-      if (state is AuthStateLoggedOut) {
+      } else if (state is AuthStateRegistering) {
+        return Registerview();
+      } else if (state is AuthStateLoggedOut) {
         return LoginPage();
       }
       return Scaffold(

@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:beginners_course/const/routes.dart';
-import 'package:beginners_course/service/auth/auth_service.dart';
+import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key});
@@ -35,19 +35,14 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                 'If you have not received an email, Please click this link below to verify your email.'),
             TextButton(
                 onPressed: () async {
-                  await Authservice.firebase().initialize();
-                  Authservice.firebase().sendEmailVerification();
+                  context
+                      .read<AuthBloc>()
+                      .add(AuthEventSendEmailVerification());
                 },
                 child: Text('Send email verification')),
             TextButton(
                 onPressed: () async {
-                  await Authservice.firebase().logOut();
-                  if (mounted) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginroute,
-                      (route) => false,
-                    );
-                  }
+                  context.read<AuthBloc>().add(AuthEventLogOut());
                 },
                 child: Text('Restart'))
           ],
