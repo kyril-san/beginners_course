@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:beginners_course/helpers/loading/loading_screen.dart';
+import 'package:beginners_course/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:beginners_course/screens/home/home_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
@@ -32,6 +33,8 @@ class CheckVerificationPage extends StatelessWidget {
           return VerifyEmailPage();
         } else if (state is AuthStateRegistering) {
           return Registerview();
+        } else if (state is AuthstateForgotPassword) {
+          return ForgotPasswordView();
         } else if (state is AuthStateLoggedOut) {
           return LoginPage();
         }

@@ -84,13 +84,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthStateLoggedOut(exception: e, isloading: false));
       }
     });
-
+//! Forgot Password
     on<AuthEventForgotPassword>((event, emit) async {
       emit(AuthstateForgotPassword(
           exception: null, hasSentEmail: false, isLoading: false));
       final email = event.email;
-      if (email.isEmpty) {
-        return;
+      if (email == null) {
+        return; //user just wanted to go to the Forgot password Screen
       }
       emit(const AuthstateForgotPassword(
         exception: null,

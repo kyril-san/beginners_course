@@ -9,6 +9,12 @@ final class AuthEventInitialize extends AuthEvent {
   const AuthEventInitialize();
 }
 
+final class AuthEventForgotPassword extends AuthEvent {
+  final String? email;
+
+  const AuthEventForgotPassword({this.email});
+}
+
 final class AuthEventSendEmailVerification extends AuthEvent {
   const AuthEventSendEmailVerification();
 }

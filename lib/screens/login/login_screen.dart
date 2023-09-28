@@ -88,11 +88,19 @@ class _LoginPageState extends State<LoginPage> {
                               .add(AuthEventLogin(email, password));
                         },
                         child: Text('Login')),
+                    SizedBox(height: 10),
                     TextButton(
                         onPressed: () {
                           context
                               .read<AuthBloc>()
-                              .add(AuthEventShouldRegister());
+                              .add(AuthEventForgotPassword());
+                        },
+                        child: Text('I forgot my Passowrd')),
+                    TextButton(
+                        onPressed: () {
+                          context
+                              .read<AuthBloc>()
+                              .add(AuthEventForgotPassword());
                         },
                         child: Text('Not Registered yet? Click here!'))
                   ],
