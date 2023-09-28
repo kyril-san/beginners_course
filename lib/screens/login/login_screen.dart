@@ -3,7 +3,6 @@
 import 'package:beginners_course/service/auth/auth_exceptions.dart';
 import 'package:beginners_course/service/auth/auth_service.dart';
 import 'package:beginners_course/service/auth/bloc/auth_bloc.dart';
-import 'package:beginners_course/utils/dialogs/loading_dialog.dart';
 import 'package:beginners_course/utils/show_error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +17,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-  CloseDialog? _closeFunction;
   @override
   void initState() {
     _email = TextEditingController();
@@ -38,15 +36,6 @@ class _LoginPageState extends State<LoginPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
-          final closeDialog = _closeFunction;
-          if (!state.isloading && closeDialog != null) {
-            closeDialog();
-            _closeFunction = null;
-          } else if (state.isloading && closeDialog == null) {
-            _closeFunction =
-                showLoadingDialog(context: context, text: 'Loading...');
-          }
-
           if (state.exception is InvalidLoginCredentialsException) {
             await showErrorDialog(context, 'Invalid Login Credentials');
           } else if (state.exception is InvalidEmailException) {

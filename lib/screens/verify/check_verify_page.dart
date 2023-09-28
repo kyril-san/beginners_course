@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:beginners_course/helpers/loading/loading_screen.dart';
 import 'package:beginners_course/screens/home/home_page.dart';
 import 'package:beginners_course/screens/login/login_screen.dart';
 import 'package:beginners_course/screens/register/register_screen.dart';
@@ -14,21 +15,30 @@ class CheckVerificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(AuthEventInitialize());
-    return BlocBuilder<AuthBloc, AuthState>(
-        // bloc: AuthBloc,
-        builder: (context, state) {
-      if (state is AuthStateLoggedIn) {
-        return HomePage();
-      } else if (state is AuthStateNeedVerification) {
-        return VerifyEmailPage();
-      } else if (state is AuthStateRegistering) {
-        return Registerview();
-      } else if (state is AuthStateLoggedOut) {
-        return LoginPage();
-      }
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    });
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (BuildContext context, AuthState state) {
+        if (state.isLoading) {
+          LoadingScreen().show(
+              context: context,
+              text: state.loadingtext ?? 'Please wait a moment');
+        } else {
+          LoadingScreen().hide();
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthStateLoggedIn) {
+          return HomePage();
+        } else if (state is AuthStateNeedVerification) {
+          return VerifyEmailPage();
+        } else if (state is AuthStateRegistering) {
+          return Registerview();
+        } else if (state is AuthStateLoggedOut) {
+          return LoginPage();
+        }
+        return Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
+    );
   }
 }
