@@ -9,7 +9,7 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthProvider provider) : super(const AuthstateLoading()) {
+  AuthBloc(AuthProvider provider) : super(const AuthstateUninitialized()) {
     //! initialize
     on<AuthEventInitialize>((event, emit) async {
       await provider.initialize();
@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //!log out
     on<AuthEventLogOut>((event, emit) async {
       try {
-        emit(AuthstateLoading());
+        emit(AuthstateUninitialized());
         await provider.logOut();
         emit(AuthStateLoggedOut(null));
       } on Exception catch (e) {

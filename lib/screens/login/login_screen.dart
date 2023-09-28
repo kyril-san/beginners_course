@@ -35,56 +35,53 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Login Page'),
-          backgroundColor: Colors.blue,
-        ),
-        body: FutureBuilder(
-          future: Authservice.firebase().initialize(),
-          builder: (context, snapshot) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: _email,
-                    decoration: InputDecoration(hintText: 'Put in your Email'),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _password,
-                    decoration:
-                        InputDecoration(hintText: 'Put in your Password'),
-                    obscureText: true,
-                    obscuringCharacter: '*',
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  SizedBox(height: 10),
-                  BlocListener<AuthBloc, AuthState>(
-                    listener: (context, state) async {
-                      if (state is AuthStateLoggedOut) {
-                        if (state.exception
-                            is InvalidLoginCredentialsException) {
-                          await showErrorDialog(
-                              context, 'Invalid Login Credentials');
-                        } else if (state.exception is InvalidEmailException) {
-                          await showErrorDialog(
-                              context, 'Invalid Email Address Used');
-                        } else if (state.exception is WrongPassowrdException) {
-                          await showErrorDialog(context, 'Wrong Password');
-                        } else if (state.exception is GenericAuthExceptions) {
-                          await showErrorDialog(
-                              context, 'Authentication Error');
-                        }
-                      }
-                    },
-                    child: TextButton(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthStateLoggedOut) {
+          if (state.exception is InvalidLoginCredentialsException) {
+            await showErrorDialog(context, 'Invalid Login Credentials');
+          } else if (state.exception is InvalidEmailException) {
+            await showErrorDialog(context, 'Invalid Email Address Used');
+          } else if (state.exception is WrongPassowrdException) {
+            await showErrorDialog(context, 'Wrong Password');
+          } else if (state.exception is GenericAuthExceptions) {
+            await showErrorDialog(context, 'Authentication Error');
+          }
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('Login Page'),
+            backgroundColor: Colors.blue,
+          ),
+          body: FutureBuilder(
+            future: Authservice.firebase().initialize(),
+            builder: (context, snapshot) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _email,
+                      decoration:
+                          InputDecoration(hintText: 'Put in your Email'),
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _password,
+                      decoration:
+                          InputDecoration(hintText: 'Put in your Password'),
+                      obscureText: true,
+                      obscuringCharacter: '*',
+                      autocorrect: false,
+                      enableSuggestions: false,
+                    ),
+                    SizedBox(height: 10),
+                    TextButton(
                         onPressed: () async {
                           final email = _email.text;
                           final password = _password.text;
@@ -93,17 +90,17 @@ class _LoginPageState extends State<LoginPage> {
                               .add(AuthEventLogin(email, password));
                         },
                         child: Text('Login')),
-                  ),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            registerroute, (route) => false);
-                      },
-                      child: Text('Not Registered yet? Click here!'))
-                ],
-              ),
-            );
-          },
-        ));
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              registerroute, (route) => false);
+                        },
+                        child: Text('Not Registered yet? Click here!'))
+                  ],
+                ),
+              );
+            },
+          )),
+    );
   }
 }

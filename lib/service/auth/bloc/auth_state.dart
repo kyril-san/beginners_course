@@ -5,8 +5,14 @@ abstract class AuthState {
   const AuthState();
 }
 
-class AuthstateLoading extends AuthState {
-  const AuthstateLoading();
+class AuthstateUninitialized extends AuthState {
+  const AuthstateUninitialized();
+}
+
+class AuthStateRegistering extends AuthState {
+  final Exception? exception;
+
+  const AuthStateRegistering(this.exception);
 }
 
 class AuthStateLoggedIn extends AuthState {
@@ -18,12 +24,11 @@ class AuthStateNeedVerification extends AuthState {
   const AuthStateNeedVerification();
 }
 
-class AuthStateLoggedOut extends AuthState {
+class AuthStateLoggedOut extends AuthState with EquatableMixin {
   final Exception? exception;
-  const AuthStateLoggedOut(this.exception);
-}
+  final bool isloading;
+  const AuthStateLoggedOut({required this.exception, required this.isloading});
 
-class AuthStateLogoutFailure extends AuthState {
-  final Exception exception;
-  const AuthStateLogoutFailure(this.exception);
+  @override
+  List<Object?> get props => [exception, isloading];
 }
